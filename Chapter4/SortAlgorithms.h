@@ -51,15 +51,7 @@ struct SelectionSortAlgorithm
     {
         for (; begin != end; ++begin)
         {
-            It minElem(begin);
-            It elem(begin);
-            for (++elem; elem != end; ++elem)
-            {
-                if (compFunc(*elem, *minElem))
-                {
-                    minElem = elem;
-                }
-            }
+            const It minElem(std::min_element(begin, end, compFunc));
             
             if (begin != minElem)
             {
