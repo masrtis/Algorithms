@@ -3,7 +3,6 @@
 #include <queue>
 #include <functional>
 #include <iterator>
-#include <type_traits>
 
 template <typename SortAlgorithm>
 class Sorter
