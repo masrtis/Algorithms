@@ -33,8 +33,8 @@ struct HeapSortAlgorithm
     template <typename It, typename Comp>
     void operator()(It begin, It end, Comp compFunc) const
     {
-        // TODO: Update std::binary_negate<Comp> to std::result_of when std::result_of conforms to C++11 standard
-        std::priority_queue<typename It::value_type, std::vector<typename It::value_type>, std::binary_negate<Comp>> heap(begin, end, std::not2(compFunc));
+        typedef typename It::value_type value_type;
+        std::priority_queue<value_type, std::vector<value_type>, decltype(std::not2(compFunc))> heap(begin, end, std::not2(compFunc));
 
         for (; begin != end; ++begin)
         {
