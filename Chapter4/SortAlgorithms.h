@@ -35,11 +35,7 @@ struct HeapSortAlgorithm
         typedef typename It::value_type value_type;
         std::priority_queue<value_type, std::vector<value_type>, decltype(std::not2(compFunc))> heap(begin, end, std::not2(compFunc));
 
-        for (; begin != end; ++begin)
-        {
-            *begin = heap.top();
-            heap.pop();
-        }
+        std::for_each(begin, end, [&](value_type& elem) { elem = heap.top(); heap.pop(); });
     }
 };
 
