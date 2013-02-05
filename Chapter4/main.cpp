@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_CASE(Problem4_37)
     auto dieRoll = std::bind(std::uniform_int_distribution<>(1, 32), std::discard_block_engine<std::mt19937, 256, 32>());
     std::generate_n(std::back_inserter(testData), n, dieRoll);
 
-    std::copy(begin(testData), end(testData), std::ostream_iterator<std::mt19937::result_type>(std::cout, "\n"));
+    //std::copy(begin(testData), end(testData), std::ostream_iterator<std::mt19937::result_type>(std::cout, "\n"));
 
     {
         boost::timer::auto_cpu_timer t(3);
