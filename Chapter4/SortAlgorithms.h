@@ -77,6 +77,31 @@ struct SelectionSortAlgorithm
             if (begin != minElem)
             {
                 std::iter_swap(begin, minElem);
+                
+            }
+        }
+    }
+};
+
+struct InsertionSortAlgorithm
+{
+    template <typename It, typename Comp>
+    void operator()(It begin, It end, Comp compFunc) const
+    {
+        const std::reverse_iterator<It> rEnd(begin);
+        for (std::advance(begin, 1); begin != end; ++begin)
+        {
+            It elem(begin);
+            std::reverse_iterator<It> prevElem(elem);
+            
+            for (; prevElem != rEnd; ++prevElem)
+            {
+                if (compFunc(*elem, *prevElem))
+                {
+                    std::iter_swap(elem, prevElem);
+                    elem = prevElem.base();
+                    --elem;
+                }
             }
         }
     }
@@ -84,3 +109,4 @@ struct SelectionSortAlgorithm
 
 typedef Sorter<HeapSortAlgorithm> HeapSort;
 typedef Sorter<SelectionSortAlgorithm> SelectionSort;
+typedef Sorter<InsertionSortAlgorithm> InsertionSort;
