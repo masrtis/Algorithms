@@ -89,7 +89,7 @@ struct InsertionSortAlgorithm
     void operator()(It begin, It end, Comp compFunc) const
     {
         const std::reverse_iterator<It> rEnd(begin);
-        for (std::advance(begin, 1); begin != end; ++begin)
+        for (++begin; begin != end; ++begin)
         {
             It elem(begin);
             std::reverse_iterator<It> prevElem(elem);
