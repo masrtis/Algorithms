@@ -65,4 +65,14 @@ BOOST_AUTO_TEST_CASE(Problem4_37)
         std::cout << "Insertion sort elapsed CPU time:";
     }
     BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
+
+    std::shuffle(begin(testData), end(testData), rng);
+
+    QuickSort quickSort;
+    {
+        boost::timer::auto_cpu_timer t(3);
+        quickSort.sort(begin(testData), end(testData));
+        std::cout << "Quick sort elapsed CPU time:";
+    }
+    BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
 }
