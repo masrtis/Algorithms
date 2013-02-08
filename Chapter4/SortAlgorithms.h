@@ -136,6 +136,45 @@ struct InsertionSortAlgorithm
     }
 };
 
+struct QuickSortAlgorithm
+{
+    template <typename It, typename Comp>
+    void operator()(It begin, It end, Comp compFunc) const
+    {
+        //detail::printRange(begin, end);
+
+        if (std::distance(begin, end) < 2)
+        {
+            //std::cout << "Sorted range: ";
+            //detail::printRange(begin, end);
+            return;
+        }
+
+        const It pivot(std::partition(begin, detail::advance(end, -1), std::bind2nd(compFunc, *detail::advance(end, -1))));
+        std::iter_swap(pivot, detail::advance(end, -1));
+
+        //std::cout << "First half: ";
+        //detail::printRange(begin, pivot);
+
+        //std::cout << "Second half: ";
+        //detail::printRange(pivot, end);
+
+        if (pivot != begin)
+        {
+            (*this)(begin, pivot, compFunc);
+        }
+
+        if (pivot != end)
+        {
+            (*this)(detail::advance(pivot, 1), end, compFunc);
+        }
+
+        //std::cout << "Sorted range: ";
+        //detail::printRange(begin, end);
+    }
+};
+
 typedef Sorter<HeapSortAlgorithm> HeapSort;
 typedef Sorter<SelectionSortAlgorithm> SelectionSort;
 typedef Sorter<InsertionSortAlgorithm> InsertionSort;
+typedef Sorter<QuickSortAlgorithm> QuickSort;
