@@ -3,6 +3,8 @@
 #include <queue>
 #include <functional>
 #include <iterator>
+#include <utility>
+#include <stack>
 
 namespace detail
 {
@@ -141,36 +143,34 @@ struct QuickSortAlgorithm
     template <typename It, typename Comp>
     void operator()(It begin, It end, Comp compFunc) const
     {
-        //detail::printRange(begin, end);
+        typedef std::pair<It, It> IterRange;
+        std::stack<IterRange> ranges;
+        ranges.push(std::make_pair(begin, end));
 
-        if (std::distance(begin, end) < 2)
+        do
         {
-            //std::cout << "Sorted range: ";
-            //detail::printRange(begin, end);
-            return;
-        }
+            const IterRange current(ranges.top());
+            ranges.pop();
+            
+            if (std::distance(current.first, current.second) < 2)
+            {
+                continue;
+            }
 
-        const It pivot(std::partition(begin, detail::advance(end, -1), std::bind2nd(compFunc, *detail::advance(end, -1))));
-        std::iter_swap(pivot, detail::advance(end, -1));
+            const It last(detail::advance(current.second, -1));
+            const It pivot(std::partition(current.first, last, std::bind2nd(compFunc, *last)));
+            std::iter_swap(pivot, last);
 
-        //std::cout << "First half: ";
-        //detail::printRange(begin, pivot);
+            if (pivot != current.first)
+            {
+                ranges.push(std::make_pair(current.first, pivot));
+            }
 
-        //std::cout << "Second half: ";
-        //detail::printRange(pivot, end);
-
-        if (pivot != begin)
-        {
-            (*this)(begin, pivot, compFunc);
-        }
-
-        if (pivot != end)
-        {
-            (*this)(detail::advance(pivot, 1), end, compFunc);
-        }
-
-        //std::cout << "Sorted range: ";
-        //detail::printRange(begin, end);
+            if (pivot != current.second)
+            {
+                ranges.push(std::make_pair(detail::advance(pivot, 1), current.second));
+            }
+        } while (!ranges.empty());
     }
 };
 
