@@ -54,6 +54,21 @@ namespace detail
 
         std::cout << "\n";
     }
+
+    template <typename It, typename Comp, typename IterCat>
+    void heapSort(It begin, It end, Comp compFunc, IterCat)
+    {
+        typedef typename It::value_type value_type;
+        std::priority_queue<value_type, std::vector<value_type>, decltype(makeSwap(compFunc))> heap(begin, end, makeSwap(compFunc));
+        std::for_each(begin, end, [&](value_type& elem) { elem = heap.top(); heap.pop(); });
+    }
+
+    template <typename It, typename Comp>
+    void heapSort(It begin, It end, Comp compFunc, std::random_access_iterator_tag)
+    {
+        std::make_heap(begin, end, compFunc);
+        std::sort_heap(begin, end, compFunc);
+    }
 }
 
 template <typename BinFn>
@@ -90,9 +105,7 @@ struct HeapSortAlgorithm
     template <typename It, typename Comp>
     void operator()(It begin, It end, Comp compFunc) const
     {
-        typedef typename It::value_type value_type;
-        std::priority_queue<value_type, std::vector<value_type>, decltype(makeSwap(compFunc))> heap(begin, end, makeSwap(compFunc));
-        std::for_each(begin, end, [&](value_type& elem) { elem = heap.top(); heap.pop(); });
+        detail::heapSort(begin, end, compFunc, std::iterator_traits<It>::iterator_category());
     }
 };
 
