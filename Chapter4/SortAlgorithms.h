@@ -108,7 +108,6 @@ struct SelectionSortAlgorithm
             if (begin != minElem)
             {
                 std::iter_swap(begin, minElem);
-                
             }
         }
     }
