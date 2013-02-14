@@ -119,22 +119,15 @@ struct InsertionSortAlgorithm
     template <typename It, typename Comp>
     void operator()(It begin, It end, Comp compFunc) const
     {
-        const std::reverse_iterator<It> rEnd(begin);
-        for (++begin; begin != end; ++begin)
+        It elem(detail::advance(begin, 1));
+        It nextElem(detail::advance(elem, 1));
+        for (; nextElem != end; ++nextElem)
         {
-            It elem(begin);
-            std::reverse_iterator<It> prevElem(elem);
-            
-            for (; prevElem != rEnd; ++prevElem)
-            {
-                if (compFunc(*elem, *prevElem))
-                {
-                    std::iter_swap(elem, prevElem);
-                    elem = prevElem.base();
-                    --elem;
-                }
-            }
+            std::inplace_merge(begin, elem, nextElem, compFunc);
+            elem = nextElem;
         }
+
+        std::inplace_merge(begin, elem, nextElem, compFunc);
     }
 };
 
