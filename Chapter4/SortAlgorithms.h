@@ -38,10 +38,12 @@ namespace detail
     void heapSort(It begin, It end, Comp compFunc, IterCat)
     {
         typedef typename It::value_type value_type;
+        
         const auto predicate = [=](const typename Comp::second_argument_type& lhs, const typename Comp::first_argument_type& rhs)
         {
-          return compFunc(rhs, lhs);
+            return compFunc(rhs, lhs);
         };
+
         std::priority_queue<value_type, std::vector<value_type>, decltype(predicate)> heap(begin, end, predicate);
         std::for_each(begin, end, [&](value_type& elem) { elem = heap.top(); heap.pop(); });
     }
