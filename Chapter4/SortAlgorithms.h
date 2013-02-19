@@ -8,27 +8,6 @@
 
 namespace detail
 {
-    template <typename BinFn>
-    class BinarySwap : public std::binary_function<typename BinFn::second_argument_type,
-                                                   typename BinFn::first_argument_type,
-                                                   bool>
-    {
-    public:
-        explicit BinarySwap(BinFn fn)
-            : m_fn(fn)
-        {
-
-        }
-
-        bool operator()(const typename BinFn::second_argument_type& lhs,
-                        const typename BinFn::first_argument_type& rhs) const
-        {
-            return m_fn(rhs, lhs);
-        }
-    private:
-        BinFn m_fn;
-    };
-
     template <typename It, typename Distance>
     It advance(It iter, Distance n)
     {
@@ -59,7 +38,11 @@ namespace detail
     void heapSort(It begin, It end, Comp compFunc, IterCat)
     {
         typedef typename It::value_type value_type;
-        std::priority_queue<value_type, std::vector<value_type>, decltype(makeSwap(compFunc))> heap(begin, end, makeSwap(compFunc));
+        const auto predicate = [=](const typename Comp::second_argument_type& lhs, const typename Comp::first_argument_type& rhs)
+        {
+          return compFunc(rhs, lhs);
+        };
+        std::priority_queue<value_type, std::vector<value_type>, decltype(predicate)> heap(begin, end, predicate);
         std::for_each(begin, end, [&](value_type& elem) { elem = heap.top(); heap.pop(); });
     }
 
@@ -69,12 +52,6 @@ namespace detail
         std::make_heap(begin, end, compFunc);
         std::sort_heap(begin, end, compFunc);
     }
-}
-
-template <typename BinFn>
-detail::BinarySwap<BinFn> makeSwap(BinFn fn)
-{
-    return detail::BinarySwap<BinFn>(fn);
 }
 
 template <typename SortAlgorithm>
