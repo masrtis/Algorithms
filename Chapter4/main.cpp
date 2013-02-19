@@ -37,6 +37,15 @@ BOOST_AUTO_TEST_CASE(Problem4_37)
     BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
 
     std::shuffle(begin(testData), end(testData), rng);
+
+    std::list<std::mt19937::result_type> testList(begin(testData), end(testData));
+    {
+
+        boost::timer::auto_cpu_timer t(3);
+        heapSort.sort(begin(testList), end(testList));
+        std::cout << "Heap sort (list) elapsed CPU time:";
+    }
+    BOOST_CHECK(std::is_sorted(begin(testList), end(testList)));
     
     SelectionSort selectionSort;
     
