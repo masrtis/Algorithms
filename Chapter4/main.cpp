@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE(Problem4_37)
     {
         boost::timer::auto_cpu_timer t(3);
         selectionSort.sort(begin(testData), end(testData), std::greater<std::mt19937::result_type>());
-        std::cout << "Selection sort elapsed CPU time:";
+        std::cout << "Selection sort (>) elapsed CPU time:";
     }
     BOOST_CHECK(std::is_sorted(begin(testData), end(testData), std::greater<std::mt19937::result_type>()));
 
