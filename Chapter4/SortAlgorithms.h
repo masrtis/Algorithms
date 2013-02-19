@@ -133,22 +133,17 @@ struct QuickSortAlgorithm
         {
             const IterRange current(ranges.top());
             ranges.pop();
-            
-            if (std::distance(current.first, current.second) < 2)
-            {
-                continue;
-            }
 
             const It last(detail::advance(current.second, -1));
             const It pivot(std::partition(current.first, last, std::bind2nd(compFunc, *last)));
             std::iter_swap(pivot, last);
 
-            if (pivot != current.first)
+            if (std::distance(current.first, pivot) >= 2)
             {
                 ranges.push(std::make_pair(current.first, pivot));
             }
 
-            if (pivot != current.second)
+            if (std::distance(pivot, current.second) >= 3)
             {
                 ranges.push(std::make_pair(detail::advance(pivot, 1), current.second));
             }
