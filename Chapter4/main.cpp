@@ -16,8 +16,6 @@ BOOST_AUTO_TEST_CASE(Problem4_37)
     auto dieRoll = std::bind(std::uniform_int_distribution<>(1, 32), std::discard_block_engine<std::mt19937, 256, 32>());
     std::generate_n(std::back_inserter(testData), n, dieRoll);
 
-    //std::copy(begin(testData), end(testData), std::ostream_iterator<std::mt19937::result_type>(std::cout, "\n"));
-
     {
         boost::timer::auto_cpu_timer t(3);
         std::sort(begin(testData), end(testData));
@@ -27,8 +25,24 @@ BOOST_AUTO_TEST_CASE(Problem4_37)
     std::mt19937 rng;
     std::shuffle(begin(testData), end(testData), rng);
 
-    HeapSort heapSort;
+    SelectionSort selectionSort;
+    {
+        boost::timer::auto_cpu_timer t(3);
+        selectionSort.sort(begin(testData), end(testData));
+        std::cout << "Selection sort elapsed CPU time:";
+    }
+    BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
 
+    std::shuffle(begin(testData), end(testData), rng);
+
+    {
+        boost::timer::auto_cpu_timer t(3);
+        selectionSort.sort(begin(testData), end(testData), std::greater<std::mt19937::result_type>());
+        std::cout << "Selection sort (>) elapsed CPU time:";
+    }
+    BOOST_CHECK(std::is_sorted(begin(testData), end(testData), std::greater<std::mt19937::result_type>()));
+
+    HeapSort heapSort;
     {
         boost::timer::auto_cpu_timer t(3);
         heapSort.sort(begin(testData), end(testData));
@@ -46,24 +60,6 @@ BOOST_AUTO_TEST_CASE(Problem4_37)
         std::cout << "Heap sort (list) elapsed CPU time:";
     }
     BOOST_CHECK(std::is_sorted(begin(testList), end(testList)));
-    
-    SelectionSort selectionSort;
-    
-    {
-        boost::timer::auto_cpu_timer t(3);
-        selectionSort.sort(begin(testData), end(testData));
-        std::cout << "Selection sort elapsed CPU time:";
-    }
-    BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
-
-    std::shuffle(begin(testData), end(testData), rng);
-
-    {
-        boost::timer::auto_cpu_timer t(3);
-        selectionSort.sort(begin(testData), end(testData), std::greater<std::mt19937::result_type>());
-        std::cout << "Selection sort (>) elapsed CPU time:";
-    }
-    BOOST_CHECK(std::is_sorted(begin(testData), end(testData), std::greater<std::mt19937::result_type>()));
 
     std::shuffle(begin(testData), end(testData), rng);
 
