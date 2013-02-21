@@ -130,7 +130,7 @@ struct QuickSortAlgorithm
             ranges.pop();
 
             const It last(std::prev(current.second));
-            const It pivot(std::partition(current.first, last, std::bind2nd(compFunc, *last)));
+            const It pivot(std::partition(current.first, last, [=](const It::value_type& val){ return compFunc(val, *last); }));
             std::iter_swap(pivot, last);
 
             if (std::distance(current.first, pivot) >= 2)
