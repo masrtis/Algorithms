@@ -120,6 +120,11 @@ struct QuickSortAlgorithm
     template <typename It, typename Comp>
     void operator()(It begin, It end, Comp compFunc) const
     {
+        if (std::distance(begin, end) < 2)
+        {
+            return;
+        }
+
         typedef std::pair<It, It> IterRange;
         std::stack<IterRange> ranges;
         ranges.push(std::make_pair(begin, end));
