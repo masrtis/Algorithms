@@ -8,13 +8,6 @@
 
 namespace detail
 {
-    template <typename It, typename Distance>
-    It advance(It iter, Distance n)
-    {
-        std::advance(iter, n);
-        return iter;
-    }
-
     template <typename It>
     void printRange(It begin, It end)
     {
@@ -110,8 +103,8 @@ struct InsertionSortAlgorithm
     template <typename It, typename Comp>
     void operator()(It begin, It end, Comp compFunc) const
     {
-        It elem(detail::advance(begin, 1));
-        It nextElem(detail::advance(elem, 1));
+        It elem(std::next(begin));
+        It nextElem(std::next(elem));
         for (; nextElem != end; ++nextElem)
         {
             std::inplace_merge(begin, elem, nextElem, compFunc);
@@ -136,7 +129,7 @@ struct QuickSortAlgorithm
             const IterRange current(ranges.top());
             ranges.pop();
 
-            const It last(detail::advance(current.second, -1));
+            const It last(std::prev(current.second));
             const It pivot(std::partition(current.first, last, std::bind2nd(compFunc, *last)));
             std::iter_swap(pivot, last);
 
@@ -147,7 +140,7 @@ struct QuickSortAlgorithm
 
             if (std::distance(pivot, current.second) >= 3)
             {
-                ranges.push(std::make_pair(detail::advance(pivot, 1), current.second));
+                ranges.push(std::make_pair(std::next(pivot), current.second));
             }
         } while (!ranges.empty());
     }
