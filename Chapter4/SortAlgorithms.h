@@ -79,15 +79,6 @@ private:
     SortAlgorithm m_algorithm;
 };
 
-struct HeapSortAlgorithm
-{
-    template <typename It, typename Comp>
-    void operator()(It begin, It end, Comp compFunc) const
-    {
-        detail::heapSort(begin, end, compFunc, std::iterator_traits<It>::iterator_category());
-    }
-};
-
 struct SelectionSortAlgorithm
 {
     template <typename It, typename Comp>
@@ -102,6 +93,15 @@ struct SelectionSortAlgorithm
                 std::iter_swap(begin, minElem);
             }
         }
+    }
+};
+
+struct HeapSortAlgorithm
+{
+    template <typename It, typename Comp>
+    void operator()(It begin, It end, Comp compFunc) const
+    {
+        detail::heapSort(begin, end, compFunc, std::iterator_traits<It>::iterator_category());
     }
 };
 
@@ -153,7 +153,7 @@ struct QuickSortAlgorithm
     }
 };
 
-typedef Sorter<HeapSortAlgorithm> HeapSort;
 typedef Sorter<SelectionSortAlgorithm> SelectionSort;
+typedef Sorter<HeapSortAlgorithm> HeapSort;
 typedef Sorter<InsertionSortAlgorithm> InsertionSort;
 typedef Sorter<QuickSortAlgorithm> QuickSort;
