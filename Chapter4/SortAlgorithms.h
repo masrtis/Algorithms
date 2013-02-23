@@ -89,100 +89,84 @@ namespace detail
     };
 }
 
-template <typename SortAlgorithm>
-class Sorter
+template <typename It, typename Comp>
+void selectionSort(It begin, It end, Comp compFunc)
 {
-public:
-    // Operates on STL iterators to sort a range of elements in any container
-    // using operator< as comparison function
-    template <typename It>
-    void sort(It begin, It end) const
+    for (; begin != end; ++begin)
     {
-        sort(begin, end, std::less<typename It::value_type>());
-    }
+        const It minElem(std::min_element(begin, end, compFunc));
 
-    // Operates on STL iterators to sort a range of elements in any container
-    // using compFunc as comparison function
-    template <typename It, typename Comp>
-    void sort(It begin, It end, Comp compFunc) const
-    {
-        m_algorithm(begin, end, compFunc);
-    }
-private:
-    SortAlgorithm m_algorithm;
-};
-
-struct SelectionSortAlgorithm
-{
-    template <typename It, typename Comp>
-    void operator()(It begin, It end, Comp compFunc) const
-    {
-        for (; begin != end; ++begin)
+        if (begin != minElem)
         {
-            const It minElem(std::min_element(begin, end, compFunc));
-            
-            if (begin != minElem)
-            {
-                std::iter_swap(begin, minElem);
-            }
+            std::iter_swap(begin, minElem);
         }
     }
-};
+}
 
-struct HeapSortAlgorithm
+template <typename It>
+void selectionSort(It begin, It end)
 {
-    template <typename It, typename Comp>
-    void operator()(It begin, It end, Comp compFunc) const
-    {
-        detail::heapSort(begin, end, compFunc, std::iterator_traits<It>::iterator_category());
-    }
-};
+    selectionSort(begin, end, std::less<typename It::value_type>());
+}
 
-struct InsertionSortAlgorithm
+template <typename It, typename Comp>
+void heapSort(It begin, It end, Comp compFunc)
 {
-    template <typename It, typename Comp>
-    void operator()(It begin, It end, Comp compFunc) const
-    {
-        It elem(std::next(begin));
-        It nextElem(std::next(elem));
-        for (; nextElem != end; ++nextElem)
-        {
-            std::inplace_merge(begin, elem, nextElem, compFunc);
-            elem = nextElem;
-        }
+    detail::heapSort(begin, end, compFunc, std::iterator_traits<It>::iterator_category());
+}
 
+template <typename It>
+void heapSort(It begin, It end)
+{
+    heapSort(begin, end, std::less<typename It::value_type>());
+}
+
+template <typename It, typename Comp>
+void insertionSort(It begin, It end, Comp compFunc)
+{
+    It elem(std::next(begin));
+    It nextElem(std::next(elem));
+    for (; nextElem != end; ++nextElem)
+    {
         std::inplace_merge(begin, elem, nextElem, compFunc);
+        elem = nextElem;
     }
-};
 
-struct QuickSortAlgorithm
+    std::inplace_merge(begin, elem, nextElem, compFunc);
+}
+
+template <typename It>
+void insertionSort(It begin, It end)
 {
-    template <typename It, typename Comp>
-    void operator()(It begin, It end, Comp compFunc) const
+    insertionSort(begin, end, std::less<typename It::value_type>());
+}
+
+template <typename It, typename Comp>
+void quickSort(It begin, It end, Comp compFunc)
+{
+    detail::QuicksortStack<It> ranges;
+    ranges.push(std::make_pair(begin, end));
+
+    while (!ranges.empty())
     {
-        detail::QuicksortStack<It> ranges;
-        ranges.push(std::make_pair(begin, end));
-        
-        while (!ranges.empty())
+        const detail::QuicksortStack<It>::IterRange current(ranges.top());
+        ranges.pop();
+
+        const It last(std::prev(current.second));
+        const It pivot(std::partition(current.first, last, [=](const It::value_type& val){ return compFunc(val, *last); }));
+        std::iter_swap(pivot, last);
+
+        ranges.push(std::make_pair(current.first, pivot));
+
+        if (pivot != current.second)
         {
-            const detail::QuicksortStack<It>::IterRange current(ranges.top());
-            ranges.pop();
-
-            const It last(std::prev(current.second));
-            const It pivot(std::partition(current.first, last, [=](const It::value_type& val){ return compFunc(val, *last); }));
-            std::iter_swap(pivot, last);
-
-            ranges.push(std::make_pair(current.first, pivot));
-
-            if (pivot != current.second)
-            {
-                ranges.push(std::make_pair(std::next(pivot), current.second));
-            }
+            ranges.push(std::make_pair(std::next(pivot), current.second));
         }
     }
-};
+}
 
-typedef Sorter<SelectionSortAlgorithm> SelectionSort;
-typedef Sorter<HeapSortAlgorithm> HeapSort;
-typedef Sorter<InsertionSortAlgorithm> InsertionSort;
-typedef Sorter<QuickSortAlgorithm> QuickSort;
+template <typename It>
+void quickSort(It begin, It end)
+{
+    quickSort(begin, end, std::less<typename It::value_type>());
+}

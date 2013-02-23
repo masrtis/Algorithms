@@ -25,10 +25,9 @@ BOOST_AUTO_TEST_CASE(Problem4_37)
     std::mt19937 rng;
     std::shuffle(begin(testData), end(testData), rng);
 
-    SelectionSort selectionSort;
     {
         boost::timer::auto_cpu_timer t(3);
-        selectionSort.sort(begin(testData), end(testData));
+        selectionSort(begin(testData), end(testData));
         std::cout << "Selection sort elapsed CPU time:";
     }
     BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
@@ -37,15 +36,14 @@ BOOST_AUTO_TEST_CASE(Problem4_37)
 
     {
         boost::timer::auto_cpu_timer t(3);
-        selectionSort.sort(begin(testData), end(testData), std::greater<std::mt19937::result_type>());
+        selectionSort(begin(testData), end(testData), std::greater<std::mt19937::result_type>());
         std::cout << "Selection sort (>) elapsed CPU time:";
     }
     BOOST_CHECK(std::is_sorted(begin(testData), end(testData), std::greater<std::mt19937::result_type>()));
 
-    HeapSort heapSort;
     {
         boost::timer::auto_cpu_timer t(3);
-        heapSort.sort(begin(testData), end(testData));
+        heapSort(begin(testData), end(testData));
         std::cout << "Heap sort elapsed CPU time:";
     }
     BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
@@ -56,31 +54,29 @@ BOOST_AUTO_TEST_CASE(Problem4_37)
     {
 
         boost::timer::auto_cpu_timer t(3);
-        heapSort.sort(begin(testList), end(testList));
+        heapSort(begin(testList), end(testList));
         std::cout << "Heap sort (list) elapsed CPU time:";
     }
     BOOST_CHECK(std::is_sorted(begin(testList), end(testList)));
 
     std::shuffle(begin(testData), end(testData), rng);
 
-    InsertionSort insertionSort;
     {
         boost::timer::auto_cpu_timer t(3);
-        insertionSort.sort(begin(testData), end(testData));
+        insertionSort(begin(testData), end(testData));
         std::cout << "Insertion sort elapsed CPU time:";
     }
     BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
 
     std::shuffle(begin(testData), end(testData), rng);
 
-    QuickSort quickSort;
     {
         boost::timer::auto_cpu_timer t(3);
-        quickSort.sort(begin(testData), end(testData));
+        quickSort(begin(testData), end(testData));
         std::cout << "Quick sort elapsed CPU time:";
     }
     BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
 
     std::vector<int> emptyContainer;
-    quickSort.sort(begin(emptyContainer), end(emptyContainer));
+    quickSort(begin(emptyContainer), end(emptyContainer));
 }
