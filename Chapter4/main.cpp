@@ -80,4 +80,7 @@ BOOST_AUTO_TEST_CASE(Problem4_37)
         std::cout << "Quick sort elapsed CPU time:";
     }
     BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
+
+    std::vector<int> emptyContainer;
+    quickSort.sort(begin(emptyContainer), end(emptyContainer));
 }
