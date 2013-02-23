@@ -47,6 +47,46 @@ namespace detail
         std::make_heap(begin, end, compFunc);
         std::sort_heap(begin, end, compFunc);
     }
+
+    template <typename It>
+    class QuicksortStack
+    {
+    public:
+        typedef std::pair<It, It> IterRange;
+        
+        void push(IterRange&& range)
+        {
+            if (std::distance(range.first, range.second) >= 2)
+            {
+                m_stack.push(range);
+            }
+        }
+
+        void push(const IterRange& range)
+        {
+            if (std::distance(range.first, range.second) >= 2)
+            {
+                m_stack.push(range);
+            }
+        }
+
+        void pop()
+        {
+            m_stack.pop();
+        }
+
+        IterRange top() const
+        {
+            return m_stack.top();
+        }
+
+        bool empty() const
+        {
+            return m_stack.empty();
+        }
+    private:
+        std::stack<IterRange> m_stack;
+    };
 }
 
 template <typename SortAlgorithm>
@@ -120,34 +160,25 @@ struct QuickSortAlgorithm
     template <typename It, typename Comp>
     void operator()(It begin, It end, Comp compFunc) const
     {
-        if (std::distance(begin, end) < 2)
-        {
-            return;
-        }
-
-        typedef std::pair<It, It> IterRange;
-        std::stack<IterRange> ranges;
+        detail::QuicksortStack<It> ranges;
         ranges.push(std::make_pair(begin, end));
-
-        do
+        
+        while (!ranges.empty())
         {
-            const IterRange current(ranges.top());
+            const detail::QuicksortStack<It>::IterRange current(ranges.top());
             ranges.pop();
 
             const It last(std::prev(current.second));
             const It pivot(std::partition(current.first, last, [=](const It::value_type& val){ return compFunc(val, *last); }));
             std::iter_swap(pivot, last);
 
-            if (std::distance(current.first, pivot) >= 2)
-            {
-                ranges.push(std::make_pair(current.first, pivot));
-            }
+            ranges.push(std::make_pair(current.first, pivot));
 
-            if (std::distance(pivot, current.second) >= 3)
+            if (pivot != current.second)
             {
                 ranges.push(std::make_pair(std::next(pivot), current.second));
             }
-        } while (!ranges.empty());
+        }
     }
 };
 
