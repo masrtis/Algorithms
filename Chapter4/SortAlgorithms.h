@@ -15,7 +15,7 @@ namespace detail
         {
             const It last(detail::advance(end, -1));
             std::cout << "{ ";
-            std::copy(begin, last, std::ostream_iterator<It::value_type>(std::cout, ", "));
+            std::copy(begin, last, std::ostream_iterator<typename It::value_type>(std::cout, ", "));
             std::cout << *last;
             std::cout << " }";
         }
@@ -149,11 +149,11 @@ void quickSort(It begin, It end, Comp compFunc)
 
     while (!ranges.empty())
     {
-        const detail::QuicksortStack<It>::IterRange current(ranges.top());
+        const auto current(ranges.top());
         ranges.pop();
 
         const It last(std::prev(current.second));
-        const It pivot(std::partition(current.first, last, [=](const It::value_type& val){ return compFunc(val, *last); }));
+        const It pivot(std::partition(current.first, last, [=](const typename It::value_type& val){ return compFunc(val, *last); }));
         std::iter_swap(pivot, last);
 
         ranges.push(std::make_pair(current.first, pivot));
