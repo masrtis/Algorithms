@@ -51,9 +51,10 @@ namespace detail
     template <typename It>
     class QuicksortStack
     {
-    public:
+    private:
         typedef std::pair<It, It> IterRange;
-        
+        std::stack<IterRange> m_stack;
+    public:
         void push(IterRange&& range)
         {
             if (std::distance(range.first, range.second) >= 2)
@@ -84,8 +85,6 @@ namespace detail
         {
             return m_stack.empty();
         }
-    private:
-        std::stack<IterRange> m_stack;
     };
 }
 
