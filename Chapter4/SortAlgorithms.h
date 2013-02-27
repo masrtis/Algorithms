@@ -13,7 +13,7 @@ namespace detail
     {
         if (begin != end)
         {
-            const It last(detail::advance(end, -1));
+            const It last(std::prev(end, 1));
             std::cout << "{ ";
             std::copy(begin, last, std::ostream_iterator<typename It::value_type>(std::cout, ", "));
             std::cout << *last;
