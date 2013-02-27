@@ -5,6 +5,7 @@
 #include <iterator>
 #include <utility>
 #include <stack>
+#include <iostream>
 
 namespace detail
 {
@@ -59,7 +60,7 @@ namespace detail
         {
             if (std::distance(range.first, range.second) >= 2)
             {
-                m_stack.push(range);
+                m_stack.push(std::forward<IterRange>(range));
             }
         }
 
