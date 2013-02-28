@@ -19,9 +19,12 @@ std::string generateRandomString(RandFunc rng, std::string::size_type size)
 BOOST_AUTO_TEST_CASE(SortRandomStrings)
 {
     std::vector<std::string> testData;
-    const size_t n = 10000;
-    const size_t strSize = 512;
+    const size_t n = 1000000;
     testData.reserve(n);
+
+    auto charGenerator(std::bind(std::uniform_int_distribution<>(1, 255), std::mt19937()));
+    auto strSizeGenerator(std::bind(std::uniform_int_distribution<>(128, 1024), std::mt19937()));
+    std::generate_n(std::back_inserter(testData), n, [&](){ return generateRandomString(charGenerator, strSizeGenerator()); });
 
     {
         boost::timer::auto_cpu_timer t(3);
@@ -29,26 +32,24 @@ BOOST_AUTO_TEST_CASE(SortRandomStrings)
         std::cout << "Standard sort elapsed CPU time:";
     }
 
-    auto charGenerator(std::bind(std::uniform_int_distribution<>(1, 255), std::mt19937()));
-    std::generate_n(std::back_inserter(testData), n, [=](){ return generateRandomString(charGenerator, strSize); });
-
-    {
-        boost::timer::auto_cpu_timer t(3);
-        selectionSort(begin(testData), end(testData));
-        std::cout << "Selection sort elapsed CPU time:";
-    }
-    BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
-
     std::mt19937 rng;
     std::shuffle(begin(testData), end(testData), rng);
 
-    {
-        boost::timer::auto_cpu_timer t(3);
-        selectionSort(begin(testData), end(testData), std::greater<std::string>());
-        std::cout << "Selection sort (>) elapsed CPU time:";
-    }
-    BOOST_CHECK(std::is_sorted(begin(testData), end(testData), std::greater<std::string>()));
+    //{
+    //    boost::timer::auto_cpu_timer t(3);
+    //    selectionSort(begin(testData), end(testData));
+    //    std::cout << "Selection sort elapsed CPU time:";
+    //}
+    //BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
 
+    //{
+    //    boost::timer::auto_cpu_timer t(3);
+    //    selectionSort(begin(testData), end(testData), std::greater<std::string>());
+    //    std::cout << "Selection sort (>) elapsed CPU time:";
+    //}
+    //BOOST_CHECK(std::is_sorted(begin(testData), end(testData), std::greater<std::string>()));
+
+    std::list<std::string> testList(begin(testData), end(testData));
     {
         boost::timer::auto_cpu_timer t(3);
         heapSort(begin(testData), end(testData));
@@ -56,9 +57,6 @@ BOOST_AUTO_TEST_CASE(SortRandomStrings)
     }
     BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
 
-    std::shuffle(begin(testData), end(testData), rng);
-
-    std::list<std::string> testList(begin(testData), end(testData));
     {
 
         boost::timer::auto_cpu_timer t(3);
@@ -69,12 +67,12 @@ BOOST_AUTO_TEST_CASE(SortRandomStrings)
 
     std::shuffle(begin(testData), end(testData), rng);
 
-    {
-        boost::timer::auto_cpu_timer t(3);
-        insertionSort(begin(testData), end(testData));
-        std::cout << "Insertion sort elapsed CPU time:";
-    }
-    BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
+    //{
+    //    boost::timer::auto_cpu_timer t(3);
+    //    insertionSort(begin(testData), end(testData));
+    //    std::cout << "Insertion sort elapsed CPU time:";
+    //}
+    //BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
 
     std::shuffle(begin(testData), end(testData), rng);
 
