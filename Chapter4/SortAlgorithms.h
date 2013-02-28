@@ -27,26 +27,25 @@ namespace detail
 
         std::cout << "\n";
     }
+    
+    template <typename It, typename Comp>
+    void heapSort(It begin, It end, Comp compFunc, std::random_access_iterator_tag)
+    {
+        std::make_heap(begin, end, compFunc);
+        std::sort_heap(begin, end, compFunc);
+    }
 
     template <typename It, typename Comp, typename IterCat>
     void heapSort(It begin, It end, Comp compFunc, IterCat)
     {
         typedef typename It::value_type value_type;
         
-        const auto predicate = [=](const typename Comp::second_argument_type& lhs, const typename Comp::first_argument_type& rhs)
-        {
-            return compFunc(rhs, lhs);
-        };
-
-        std::priority_queue<value_type, std::vector<value_type>, decltype(predicate)> heap(begin, end, predicate);
-        std::for_each(begin, end, [&](value_type& elem) { elem = heap.top(); heap.pop(); });
-    }
-
-    template <typename It, typename Comp>
-    void heapSort(It begin, It end, Comp compFunc, std::random_access_iterator_tag)
-    {
-        std::make_heap(begin, end, compFunc);
-        std::sort_heap(begin, end, compFunc);
+        std::vector<value_type> randomAccessContainer;
+        randomAccessContainer.reserve(std::distance(begin, end));
+        std::move(begin, end, std::back_inserter(randomAccessContainer));
+        
+        heapSort(std::begin(randomAccessContainer), std::end(randomAccessContainer), compFunc, std::random_access_iterator_tag());
+        std::move(std::begin(randomAccessContainer), std::end(randomAccessContainer), begin);
     }
 
     template <typename It>
