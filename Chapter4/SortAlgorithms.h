@@ -59,7 +59,7 @@ namespace detail
         {
             if (std::distance(range.first, range.second) >= 2)
             {
-                m_stack.push(std::forward<IterRange>(range));
+                m_stack.push(std::move(range));
             }
         }
 
