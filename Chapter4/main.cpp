@@ -58,7 +58,6 @@ BOOST_AUTO_TEST_CASE(SortRandomStrings)
     BOOST_CHECK(std::is_sorted(begin(testData), end(testData)));
 
     {
-
         boost::timer::auto_cpu_timer t(3);
         heapSort(begin(testList), end(testList));
         std::cout << "Heap sort (list) elapsed CPU time:";
