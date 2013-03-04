@@ -123,6 +123,11 @@ void heapSort(It begin, It end)
 template <typename It, typename Comp>
 void insertionSort(It begin, It end, Comp compFunc)
 {
+    if (std::distance(begin, end) < 2)
+    {
+        return;
+    }
+
     It elem(std::next(begin));
     It nextElem(std::next(elem));
     for (; nextElem != end; ++nextElem)
