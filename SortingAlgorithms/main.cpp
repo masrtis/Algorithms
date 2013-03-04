@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE ADMChapter4
+#define BOOST_TEST_MODULE SortAlgorithms
 #include <boost/test/unit_test.hpp>
 #include <boost/timer/timer.hpp>
 
