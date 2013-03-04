@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE(SortRandomStrings)
     auto strSizeGenerator(std::bind(std::uniform_int_distribution<>(128, 512), std::mt19937()));
     
     std::cout << "Sort random strings:" << std::endl;
-    runTestCase<std::string>(100000, [&]{ return generateRandomString(charGenerator, strSizeGenerator()); }, true);
+    runTestCase<std::string>(1000, [&]{ return generateRandomString(charGenerator, strSizeGenerator()); }, true);
     std::cout << std::endl;
 }
 
@@ -105,7 +105,8 @@ BOOST_AUTO_TEST_CASE(SortRandomDieRolls)
     auto dieRoll = std::bind(std::uniform_int_distribution<>(1, 32), std::discard_block_engine<std::mt19937, 256, 32>());
     
     std::cout << "Sort random die rolls:" << std::endl;
-    runTestCase<std::mt19937::result_type>(100000, dieRoll, true);
+    runTestCase<std::mt19937::result_type>(1000, dieRoll, true);
+    std::cout << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(EmptySort)
