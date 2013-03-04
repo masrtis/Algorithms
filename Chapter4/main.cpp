@@ -108,8 +108,16 @@ BOOST_AUTO_TEST_CASE(SortRandomDieRolls)
     runTestCase<std::mt19937::result_type>(100000, dieRoll, true);
 }
 
-BOOST_AUTO_TEST_CASE(EmptyQuicksort)
+BOOST_AUTO_TEST_CASE(EmptySort)
 {
+    std::cout << "Testing empty container sort..." << std::endl;
+
     std::vector<int> emptyContainer;
+    BOOST_CHECK_NO_THROW(selectionSort(begin(emptyContainer), end(emptyContainer)));
+    BOOST_CHECK_NO_THROW(heapSort(begin(emptyContainer), end(emptyContainer)));
+    BOOST_CHECK_NO_THROW(insertionSort(begin(emptyContainer), end(emptyContainer)));
     BOOST_CHECK_NO_THROW(quickSort(begin(emptyContainer), end(emptyContainer)));
+
+    std::list<int> emptyList;
+    BOOST_CHECK_NO_THROW(heapSort(begin(emptyContainer), end(emptyContainer)));
 }
