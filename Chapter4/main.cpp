@@ -8,7 +8,7 @@
 #include "SortAlgorithms.h"
 
 template <typename RandFunc>
-std::string generateRandomString(RandFunc rng, std::string::size_type size)
+std::string generateRandomString(RandFunc& rng, std::string::size_type size)
 {
     std::string result;
     result.reserve(size);
