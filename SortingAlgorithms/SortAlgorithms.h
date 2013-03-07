@@ -111,7 +111,7 @@ void selectionSort(It begin, It end)
 template <typename It, typename Comp>
 void heapSort(It begin, It end, Comp compFunc)
 {
-    detail::heapSort(begin, end, compFunc, std::iterator_traits<It>::iterator_category());
+    detail::heapSort(begin, end, compFunc, typename std::iterator_traits<It>::iterator_category());
 }
 
 template <typename It>
