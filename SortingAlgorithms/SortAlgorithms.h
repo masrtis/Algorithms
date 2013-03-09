@@ -40,10 +40,7 @@ namespace detail
     {
         typedef typename It::value_type value_type;
         
-        std::vector<value_type> randomAccessContainer;
-        randomAccessContainer.reserve(std::distance(begin, end));
-        std::move(begin, end, std::back_inserter(randomAccessContainer));
-        
+        std::vector<value_type> randomAccessContainer(std::make_move_iterator(begin), std::make_move_iterator(end));
         heapSort(std::begin(randomAccessContainer), std::end(randomAccessContainer), compFunc, std::random_access_iterator_tag());
         std::move(std::begin(randomAccessContainer), std::end(randomAccessContainer), begin);
     }
