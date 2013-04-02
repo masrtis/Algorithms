@@ -9,14 +9,14 @@
 
 namespace detail
 {
-    template <typename It>
-    void printRange(It begin, It end)
+    template <typename BiDirIt>
+    void printRange(BiDirIt begin, BiDirIt end)
     {
         if (begin != end)
         {
             const It last(std::prev(end));
             std::cout << "{ ";
-            std::copy(begin, last, std::ostream_iterator<typename It::value_type>(std::cout, ", "));
+            std::copy(begin, last, std::ostream_iterator<typename BiDirIt::value_type>(std::cout, ", "));
             std::cout << *last;
             std::cout << " }";
         }
@@ -28,28 +28,28 @@ namespace detail
         std::cout << "\n";
     }
     
-    template <typename It, typename Comp>
-    void heapSort(It begin, It end, Comp compFunc, std::random_access_iterator_tag)
+    template <typename RandIt, typename Comparer>
+    void heapSort(RandIt begin, RandIt end, Comparer compFunc, std::random_access_iterator_tag)
     {
         std::make_heap(begin, end, compFunc);
         std::sort_heap(begin, end, compFunc);
     }
 
-    template <typename It, typename Comp, typename IterCat>
-    void heapSort(It begin, It end, Comp compFunc, IterCat)
+    template <typename FwdIt, typename Comparer, typename IterCat>
+    void heapSort(FwdIt begin, FwdIt end, Comparer compFunc, IterCat)
     {
-        typedef typename It::value_type value_type;
+        typedef typename FwdIt::value_type value_type;
         
         std::vector<value_type> randomAccessContainer(std::make_move_iterator(begin), std::make_move_iterator(end));
         heapSort(std::begin(randomAccessContainer), std::end(randomAccessContainer), compFunc, std::random_access_iterator_tag());
         std::move(std::begin(randomAccessContainer), std::end(randomAccessContainer), begin);
     }
 
-    template <typename It>
+    template <typename InIt>
     class QuicksortStack
     {
     private:
-        typedef std::pair<It, It> IterRange;
+        typedef std::pair<InIt, InIt> IterRange;
         std::stack<IterRange> m_stack;
     public:
         void push(IterRange&& range)
@@ -85,12 +85,12 @@ namespace detail
     };
 }
 
-template <typename It, typename Comp>
-void selectionSort(It begin, It end, Comp compFunc)
+template <typename FwdIt, typename Comparer>
+void selectionSort(FwdIt begin, FwdIt end, Comparer compFunc)
 {
     for (; begin != end; ++begin)
     {
-        const It minElem(std::min_element(begin, end, compFunc));
+        const auto minElem(std::min_element(begin, end, compFunc));
 
         if (begin != minElem)
         {
@@ -99,34 +99,34 @@ void selectionSort(It begin, It end, Comp compFunc)
     }
 }
 
-template <typename It>
-void selectionSort(It begin, It end)
+template <typename FwdIt>
+void selectionSort(FwdIt begin, FwdIt end)
 {
-    selectionSort(begin, end, std::less<typename It::value_type>());
+    selectionSort(begin, end, std::less<typename FwdIt::value_type>());
 }
 
-template <typename It, typename Comp>
-void heapSort(It begin, It end, Comp compFunc)
+template <typename FwdIt, typename Comparer>
+void heapSort(FwdIt begin, FwdIt end, Comparer compFunc)
 {
-    detail::heapSort(begin, end, compFunc, typename std::iterator_traits<It>::iterator_category());
+    detail::heapSort(begin, end, compFunc, typename std::iterator_traits<FwdIt>::iterator_category());
 }
 
-template <typename It>
-void heapSort(It begin, It end)
+template <typename FwdIt>
+void heapSort(FwdIt begin, FwdIt end)
 {
-    heapSort(begin, end, std::less<typename It::value_type>());
+    heapSort(begin, end, std::less<typename FwdIt::value_type>());
 }
 
-template <typename It, typename Comp>
-void insertionSort(It begin, It end, Comp compFunc)
+template <typename FwdIt, typename Comparer>
+void insertionSort(FwdIt begin, FwdIt end, Comparer compFunc)
 {
     if (std::distance(begin, end) < 2)
     {
         return;
     }
 
-    It elem(std::next(begin));
-    It nextElem(std::next(elem));
+    auto elem(std::next(begin));
+    auto nextElem(std::next(elem));
     for (; nextElem != end; ++nextElem)
     {
         std::inplace_merge(begin, elem, nextElem, compFunc);
@@ -136,16 +136,16 @@ void insertionSort(It begin, It end, Comp compFunc)
     std::inplace_merge(begin, elem, nextElem, compFunc);
 }
 
-template <typename It>
-void insertionSort(It begin, It end)
+template <typename FwdIt>
+void insertionSort(FwdIt begin, FwdIt end)
 {
-    insertionSort(begin, end, std::less<typename It::value_type>());
+    insertionSort(begin, end, std::less<typename FwdIt::value_type>());
 }
 
-template <typename It, typename Comp>
-void quickSort(It begin, It end, Comp compFunc)
+template <typename BiDirIt, typename Comparer>
+void quickSort(BiDirIt begin, BiDirIt end, Comparer compFunc)
 {
-    detail::QuicksortStack<It> ranges;
+    detail::QuicksortStack<BiDirIt> ranges;
     ranges.push(std::make_pair(begin, end));
 
     while (!ranges.empty())
@@ -153,8 +153,8 @@ void quickSort(It begin, It end, Comp compFunc)
         const auto current(ranges.top());
         ranges.pop();
 
-        const It last(std::prev(current.second));
-        const It pivot(std::partition(current.first, last, [=](const typename It::value_type& val){ return compFunc(val, *last); }));
+        const auto last(std::prev(current.second));
+        const auto pivot(std::partition(current.first, last, [=](const typename BiDirIt::value_type& val){ return compFunc(val, *last); }));
         std::iter_swap(pivot, last);
 
         ranges.push(std::make_pair(current.first, pivot));
@@ -166,8 +166,8 @@ void quickSort(It begin, It end, Comp compFunc)
     }
 }
 
-template <typename It>
-void quickSort(It begin, It end)
+template <typename BiDirIt>
+void quickSort(BiDirIt begin, BiDirIt end)
 {
-    quickSort(begin, end, std::less<typename It::value_type>());
+    quickSort(begin, end, std::less<typename BiDirIt::value_type>());
 }
