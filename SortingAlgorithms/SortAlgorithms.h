@@ -120,20 +120,15 @@ void heapSort(FwdIt begin, FwdIt end)
 template <typename FwdIt, typename Comparer>
 void insertionSort(FwdIt begin, FwdIt end, Comparer compFunc)
 {
-    if (std::distance(begin, end) < 2)
+    for (auto elem = begin; elem != end; ++elem)
     {
-        return;
+        const auto current(std::move(*elem));
+        const auto sortPosition(std::upper_bound(begin, elem, current, compFunc));
+        
+        std::move_backward(sortPosition, elem, std::next(elem));
+        
+        *sortPosition = std::move(current);
     }
-
-    auto elem(std::next(begin));
-    auto nextElem(std::next(elem));
-    for (; nextElem != end; ++nextElem)
-    {
-        std::inplace_merge(begin, elem, nextElem, compFunc);
-        elem = nextElem;
-    }
-
-    std::inplace_merge(begin, elem, nextElem, compFunc);
 }
 
 template <typename FwdIt>
