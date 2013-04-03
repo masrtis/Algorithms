@@ -14,9 +14,9 @@ namespace detail
     {
         if (begin != end)
         {
-            const It last(std::prev(end));
+            const auto last(std::prev(end));
             std::cout << "{ ";
-            std::copy(begin, last, std::ostream_iterator<typename BiDirIt::value_type>(std::cout, ", "));
+            std::copy(begin, last, std::ostream_iterator<typename std::iterator_traits<BiDirIt>::value_type>(std::cout, ", "));
             std::cout << *last;
             std::cout << " }";
         }
@@ -38,7 +38,7 @@ namespace detail
     template <typename FwdIt, typename Comparer, typename IterCat>
     void heapSort(FwdIt begin, FwdIt end, Comparer compFunc, IterCat)
     {
-        typedef typename FwdIt::value_type value_type;
+        typedef typename std::iterator_traits<FwdIt>::value_type value_type;
         
         std::vector<value_type> randomAccessContainer(std::make_move_iterator(begin), std::make_move_iterator(end));
         heapSort(std::begin(randomAccessContainer), std::end(randomAccessContainer), compFunc, std::random_access_iterator_tag());
@@ -102,7 +102,7 @@ void selectionSort(FwdIt begin, FwdIt end, Comparer compFunc)
 template <typename FwdIt>
 void selectionSort(FwdIt begin, FwdIt end)
 {
-    selectionSort(begin, end, std::less<typename FwdIt::value_type>());
+    selectionSort(begin, end, std::less<typename std::iterator_traits<FwdIt>::value_type>());
 }
 
 template <typename FwdIt, typename Comparer>
@@ -114,7 +114,7 @@ void heapSort(FwdIt begin, FwdIt end, Comparer compFunc)
 template <typename FwdIt>
 void heapSort(FwdIt begin, FwdIt end)
 {
-    heapSort(begin, end, std::less<typename FwdIt::value_type>());
+    heapSort(begin, end, std::less<typename std::iterator_traits<FwdIt>::value_type>());
 }
 
 template <typename FwdIt, typename Comparer>
@@ -134,7 +134,7 @@ void insertionSort(FwdIt begin, FwdIt end, Comparer compFunc)
 template <typename FwdIt>
 void insertionSort(FwdIt begin, FwdIt end)
 {
-    insertionSort(begin, end, std::less<typename FwdIt::value_type>());
+    insertionSort(begin, end, std::less<typename std::iterator_traits<FwdIt>::value_type>());
 }
 
 template <typename BiDirIt, typename Comparer>
@@ -149,7 +149,7 @@ void quickSort(BiDirIt begin, BiDirIt end, Comparer compFunc)
         ranges.pop();
 
         const auto last(std::prev(current.second));
-        const auto pivot(std::partition(current.first, last, [=](const typename BiDirIt::value_type& val){ return compFunc(val, *last); }));
+        const auto pivot(std::partition(current.first, last, [=](const typename std::iterator_traits<BiDirIt>::value_type& val){ return compFunc(val, *last); }));
         std::iter_swap(pivot, last);
 
         ranges.push(std::make_pair(current.first, pivot));
@@ -164,5 +164,5 @@ void quickSort(BiDirIt begin, BiDirIt end, Comparer compFunc)
 template <typename BiDirIt>
 void quickSort(BiDirIt begin, BiDirIt end)
 {
-    quickSort(begin, end, std::less<typename BiDirIt::value_type>());
+    quickSort(begin, end, std::less<typename std::iterator_traits<BiDirIt>::value_type>());
 }

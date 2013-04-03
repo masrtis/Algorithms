@@ -109,6 +109,18 @@ BOOST_AUTO_TEST_CASE(SortRandomDieRolls)
     std::cout << std::endl;
 }
 
+BOOST_AUTO_TEST_CASE(SortPointerIteratorCompilation)
+{
+    int data[] = {0};
+
+    selectionSort(std::begin(data), std::end(data));
+    heapSort(std::begin(data), std::end(data));
+    insertionSort(std::begin(data), std::end(data));
+    quickSort(std::begin(data), std::end(data));
+
+    BOOST_CHECK(true);
+}
+
 BOOST_AUTO_TEST_CASE(EmptySort)
 {
     std::cout << "Testing empty container sort..." << std::endl;
