@@ -1,4 +1,4 @@
-SortAlgorithms
+Algorithms
 ==============
 
-Implementation of various sorting algorithms in C++11.
+Implementation of various algorithms in C++11.
