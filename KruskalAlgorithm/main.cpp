@@ -2,22 +2,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/timer/timer.hpp>
 
-#include <type_traits>
-
-#include <memory>
-
 #include "AdjacencyList.h"
-
-BOOST_AUTO_TEST_CASE(MoveWeakPtr)
-{
-    std::shared_ptr<int> ptr(std::make_shared<int>(5));
-    std::weak_ptr<int> weakptr(ptr);
-    std::weak_ptr<int> movedWeakPtr(std::move(weakptr));
-
-    BOOST_CHECK(weakptr.expired());
-    BOOST_CHECK(!movedWeakPtr.expired());
-}
-
 
 BOOST_AUTO_TEST_CASE(EmptyGraph)
 {
